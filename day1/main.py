@@ -54,33 +54,32 @@ def solve_part_two(lines: list[str]) -> int:
     position = 50
     clicks = 0
 
-    print(f"The dial starts by position {position}")
     for line in lines:
         direction = line[0]
         distance = int(line[1:])
-        if direction == 'R':
-            position = (position + distance)
-            while (position >= 100):
-                clicks += 1
-                position -= 100
-        elif direction == 'L':
-            starting_position = position
-            position = (position - distance)
-            
-            if (position < 0 and starting_position == 0):
-                clicks -= 1
 
-            while (position < 0):
-                clicks += 1
-                position += 100
-        
-        
-            if position == 0:
-                clicks += 1    
-
-
-        print(f"After moving {line}, the dial is at position {position}")
-        print(f"  Click! Total clicks: {clicks}")
+        if direction == "R":
+            total = position + distance
+            clicks += total // 100
+            position = total % 100
+        elif direction == "L":
+            raw_position = position - distance
+            if raw_position < 0:
+                deficit = -raw_position
+                wraps = (deficit + 99) // 100
+                clicks += wraps
+                if position == 0:
+                    clicks -= 1
+                normalized_position = raw_position % 100
+                if normalized_position == 0:
+                    clicks += 1
+                position = normalized_position
+            else:
+                position = raw_position
+                if position == 0:
+                    clicks += 1
+        else:
+            raise ValueError(f"Unknown instruction: {line}")
 
     return clicks
 
