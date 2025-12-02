@@ -26,7 +26,7 @@ def get_invalid_ids(min_value: int, max_value: int) -> list[int]:
 
 def get_invalid_ids_from_string(min_value_string: str, max_value_string: str) -> list[int]:
     """Wrapper to convert string inputs to integers for get_invalid_ids."""
-    
+
     invalid_ids: list[int] = []
 
     min_value = int(min_value_string)    
@@ -34,12 +34,12 @@ def get_invalid_ids_from_string(min_value_string: str, max_value_string: str) ->
 
     if str(min_value_string).startswith("0"):
         print("Warning: Leading zeros in min_value_string may affect results.")
-        new_min_value = len(str(abs(min_value_string))) * 10 #round up to nearest 10
+        new_min_value = len(str(abs(min_value))) * 10  # round up to nearest 10
         for min_num in range(min_value, new_min_value):
             invalid_ids.append(min_num)
         min_value = new_min_value
 
-    invalid_ids.append(get_invalid_ids(min_value, max_value))
+    invalid_ids.extend(get_invalid_ids(min_value, max_value))
     return invalid_ids
 
 
