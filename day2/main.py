@@ -24,7 +24,7 @@ def get_invalid_ids(min_value: int, max_value: int) -> list[int]:
     return invalid_ids
 
 
-def get_invalid_ids(min_value_string: str, max_value_string: str) -> list[int]:
+def get_invalid_ids_from_string(min_value_string: str, max_value_string: str) -> list[int]:
     """Wrapper to convert string inputs to integers for get_invalid_ids."""
     
     invalid_ids: list[int] = []
@@ -32,8 +32,8 @@ def get_invalid_ids(min_value_string: str, max_value_string: str) -> list[int]:
     min_value = int(min_value_string)    
     max_value = int(max_value_string)
 
-
-    if min_value_string.startswith("0"):
+    if str(min_value_string).startswith("0"):
+        print("Warning: Leading zeros in min_value_string may affect results.")
         new_min_value = len(str(abs(min_value_string))) * 10 #round up to nearest 10
         for min_num in range(min_value, new_min_value):
             invalid_ids.append(min_num)
@@ -42,10 +42,17 @@ def get_invalid_ids(min_value_string: str, max_value_string: str) -> list[int]:
     invalid_ids.append(get_invalid_ids(min_value, max_value))
     return invalid_ids
 
-def count_invalid_ids(min_value: int, max_value: int) -> int:
-    """Convenience wrapper to count invalid IDs in the given range."""
-    return len(get_invalid_ids(min_value, max_value))
 
+def count_invalid_ids(min_value_string: str, max_value_string: str) -> int:
+    counter = len(get_invalid_ids_from_string(min_value_string, max_value_string))
+    print(f"Found {counter} invalid IDs between {min_value_string} and {max_value_string}.")
+    return counter
+
+def sum_invalid_ids(min_value_string: str, max_value_string: str) -> int:
+    listOfInvalids = get_invalid_ids_from_string(min_value_string, max_value_string)
+    total = sum(listOfInvalids)
+    print(f"Sum of invalid IDs between {min_value_string} and {max_value_string} is {total}.")
+    return total
 
 def main() -> None:
     """Run the Day 2 solution."""
@@ -58,8 +65,14 @@ def main() -> None:
     if not content:
         raise SystemExit("textinput.txt is empty.")
 
-    
+    result = []
 
+    # Split by comma, then by hyphen
+    for part in content.split(","):
+        a, b = part.split("-")
+        result.append([a, b])
+    
+    print("Part 1:", sum(sum_invalid_ids(a, b) for a, b in result))
 
 if __name__ == "__main__":
     main()
