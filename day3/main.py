@@ -28,30 +28,10 @@ def main() -> None:
 
     data = input_path.read_text(encoding="utf-8").splitlines()
 
-    print(f"Part1: Total joltage: {get_total_joltage_for(data)}")
     print(f"Part1: Total joltage: {get_total_joltage(data, 2)}")
     print(f"Part2: Total joltage: {get_total_joltage(data, 12)}")
 
     
-
-def get_largest_joltage_for(bank: str) -> int:
-
-    largest_first_digit = int(bank[0])
-    largest_second_digit = int(bank[1])
-
-    for i in range(1, len(bank)-1):
-        digit = int(bank[i])
-        if digit > largest_first_digit:
-            largest_first_digit = digit
-            largest_second_digit = int(bank[i+1])
-        elif digit > largest_second_digit:
-            largest_second_digit = digit
-
-    last_digit = int(bank[-1])
-    if last_digit > largest_second_digit:    # Check last digit
-        largest_second_digit = last_digit
-
-    return (largest_first_digit * 10) + largest_second_digit
 
 def get_largest_joltage(bank: str, batteries: int) -> int:
     jolts = list(bank[:batteries])
@@ -84,12 +64,6 @@ def get_largest_joltage(bank: str, batteries: int) -> int:
 
     value = int("".join(jolts))
     return value
-
-def get_total_joltage_for(banks: list[str]) -> int:
-    total_joltage = 0
-    for bank in banks:
-        total_joltage += get_largest_joltage_for(bank)
-    return total_joltage
 
 def get_total_joltage(banks: list[str], batteries: int) -> int:
     total_joltage = 0
