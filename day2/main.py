@@ -8,22 +8,17 @@ class Part2:
     def is_valid_id(self, number : int) -> bool:
         
         first_digit = str(number)[0]
-        if (number == int(first_digit)):
+        if (number < 10):
             return True
         
         if (number == int(first_digit * len(str(number)))):
             return False
 
         divisibles = self.get_divisors(len(str(number)))
+        
         for div in divisibles:
-            half_len = len(str(number)) // div
-            all_equal = True
-            for i in range(0, len(str(number)), half_len):
-                part = str(number)[i:i+half_len]
-                if part != str(number)[0:half_len]:
-                    all_equal = False
-                    break
-            if all_equal:
+            base_num = str(number)[:div]
+            if (base_num * (len(str(number)) // div) == str(number)):
                 return False
         return True
 
