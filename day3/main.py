@@ -28,11 +28,11 @@ def main() -> None:
 
     data = input_path.read_text(encoding="utf-8").splitlines()
 
-    # TODO: Replace this placeholder with the actual puzzle logic.
-    print(f"Read {len(data)} lines from {input_path}")
-    print(f"Total joltage: {get_total_joltage_for(data)}")
+    print(f"Part1: Total joltage: {get_total_joltage_for(data)}")
+    print(f"Part1: Total joltage: {get_total_joltage(data, 2)}")
+    print(f"Part2: Total joltage: {get_total_joltage(data, 12)}")
 
-
+    
 
 def get_largest_joltage_for(bank: str) -> int:
 
@@ -53,10 +53,48 @@ def get_largest_joltage_for(bank: str) -> int:
 
     return (largest_first_digit * 10) + largest_second_digit
 
+def get_largest_joltage(bank: str, batteries: int) -> int:
+    jolts = list(bank[:batteries])
+    hook = 0
+    for j in range(0, batteries): #iterate through every battery position
+        current_jolt = int(jolts[j])
+
+        if hook < j:
+            hook = j
+
+        if current_jolt == 9:  # Can't do better than a 9
+            hook += 1
+            continue
+
+        replaced = False
+        for i in range(hook+1, len(bank)-batteries+1+j): #iterate through the bank
+            contender_jolt = int(bank[i])
+            if (contender_jolt > current_jolt):
+                jolts[j:] = bank[i:i+batteries-j]
+                current_jolt = contender_jolt
+                hook = i
+                replaced = True
+            if (contender_jolt == 9):  # Can't do better than a 9
+                hook += 1
+                break
+            if (i == len(bank)-batteries+j and replaced == False):  # Reached the end of the bank
+                hook += 1
+            
+
+
+    value = int("".join(jolts))
+    return value
+
 def get_total_joltage_for(banks: list[str]) -> int:
     total_joltage = 0
     for bank in banks:
         total_joltage += get_largest_joltage_for(bank)
+    return total_joltage
+
+def get_total_joltage(banks: list[str], batteries: int) -> int:
+    total_joltage = 0
+    for bank in banks:
+        total_joltage += get_largest_joltage(bank, batteries)
     return total_joltage
 
 if __name__ == "__main__":
