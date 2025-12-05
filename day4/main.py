@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+from collections import deque
 
 
 def _increment_matrix(matrix: list[list[int]], r: int, c: int, increment: int) -> None:
@@ -13,21 +14,22 @@ def _increment_matrix(matrix: list[list[int]], r: int, c: int, increment: int) -
             nc = c + dc
             if 0 <= nr < rows and 0 <= nc < cols:
                 matrix[nr][nc] += increment
-
-def _count_roll_matrix(matrix: list[list[int]], grid: list[list[str]], recursive = False, count: int = 0) -> int:
-    rows = len(matrix)
-    cols = len(matrix[0]) if rows > 0 else 0
+    
+def _count_roll_matrix_with_queue(matrix: list[list[int]], queue: deque, recursive = False, count: int = 0) -> int:
     shouldRecurse = False
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == '@' and matrix[r][c] < 4:
-                count += 1
-                grid[r][c] = '.'
+    new_queue = deque()
+    while queue:
+        (r, c)= queue.popleft()
+        if matrix[r][c] < 4:
+            count += 1
+            if (recursive): # modifying matrix only if recursive, or else you'd change the value on the fly
                 _increment_matrix(matrix, r, c, -1)
-                shouldRecurse = True
+            shouldRecurse = True
+        else:
+            new_queue.append((r, c)) #put it back for next round
 
     if shouldRecurse and recursive:
-        return _count_roll_matrix(matrix, grid, recursive, count)
+        return _count_roll_matrix_with_queue(matrix, new_queue, recursive, count)
     else:
         return count
 
@@ -36,12 +38,14 @@ def count_roll_neighbours(data: list[list[str]], recursive: bool = False, count:
     cols = len(data[0]) if rows > 0 else 0
     matrix = [[0] * cols for _ in range(rows)]
     grid = [list(row) for row in data]  # convert to char grid
+    queue = deque()
     for r in range(rows):
         for c in range(cols):
             if data[r][c] == '@':
                 _increment_matrix(matrix, r, c, 1)
+                queue.append((r, c))
 
-    return _count_roll_matrix(matrix, grid, recursive, count)
+    return _count_roll_matrix_with_queue(matrix, queue, recursive, count)
     
 
 
