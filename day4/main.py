@@ -14,7 +14,7 @@ def _increment_matrix(matrix: list[list[int]], r: int, c: int, increment: int) -
             nc = c + dc
             if 0 <= nr < rows and 0 <= nc < cols:
                 matrix[nr][nc] += increment
-    
+
 def _count_roll_matrix_with_queue(matrix: list[list[int]], queue: deque, recursive = False, count: int = 0) -> int:
     shouldRecurse = False
     new_queue = deque()
@@ -46,7 +46,6 @@ def count_roll_neighbours(data: list[list[str]], recursive: bool = False, count:
                 queue.append((r, c))
 
     return _count_roll_matrix_with_queue(matrix, queue, recursive, count)
-    
 
 
 def parse_args() -> argparse.Namespace:

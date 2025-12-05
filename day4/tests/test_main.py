@@ -1,6 +1,8 @@
 from pathlib import Path
 import sys
 
+import pytest
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -57,3 +59,4 @@ def test_input_with_recursion():
     expected = main.count_roll_neighbours(puzzle_input.splitlines(), recursive=True)
 
     assert 43 == expected
+
