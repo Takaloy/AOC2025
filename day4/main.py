@@ -37,7 +37,6 @@ def count_roll_neighbours(data: list[list[str]], recursive: bool = False, count:
     rows = len(data)
     cols = len(data[0]) if rows > 0 else 0
     matrix = [[0] * cols for _ in range(rows)]
-    grid = [list(row) for row in data]  # convert to char grid
     queue = deque()
     for r in range(rows):
         for c in range(cols):
