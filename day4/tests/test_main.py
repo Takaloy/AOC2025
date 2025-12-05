@@ -41,3 +41,19 @@ def test_input_should_be_result_in_13():
     expected = main.count_roll_neighbours(puzzle_input.splitlines())
 
     assert 13 == expected
+
+
+def test_input_with_recursion():
+    puzzle_input = """..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@."""
+    expected = main.count_roll_neighbours(puzzle_input.splitlines(), recursive=True)
+
+    assert 43 == expected

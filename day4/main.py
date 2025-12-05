@@ -3,11 +3,11 @@ from pathlib import Path
 
 
 
-def count_roll_neighbours(data: list[list[str]]) -> int:
+def count_roll_neighbours(data: list[list[str]], recursive: bool = False, count: int = 0) -> int:
     rows = len(data)
     cols = len(data[0]) if rows > 0 else 0
-    count = 0
     matrix = [[0] * cols for _ in range(rows)]
+    grid = [list(row) for row in data]  # convert to char grid
 
     for r in range(rows):
         for c in range(cols):
@@ -27,13 +27,19 @@ def count_roll_neighbours(data: list[list[str]]) -> int:
                             
                         matrix[nr][nc] += 1
     
+    shouldRecurse = False
     # now loop through again to count rolls that have less than 4 papers @
     for r in range(rows):
         for c in range(cols):
             if data[r][c] == '@' and matrix[r][c] < 4:
-                count += 1    
+                grid[r][c] = '.'
+                count += 1
+                shouldRecurse = True
     
-    return count
+    if recursive and shouldRecurse:
+        return count_roll_neighbours(grid, recursive=True, count=count)
+    else:
+        return count
 
 
 def parse_args() -> argparse.Namespace:
@@ -57,7 +63,7 @@ def main() -> None:
 
     data = input_path.read_text(encoding="utf-8").splitlines()
 
-    print(f"Count of roll neighbours: {count_roll_neighbours(data)}")
-
+    print(f"Part1: Count of roll neighbours: {count_roll_neighbours(data)}")
+    print(f"Part2: Count of roll neighbours (with recursion): {count_roll_neighbours(data, recursive=True)}")
 if __name__ == "__main__":
     main()
