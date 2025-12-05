@@ -31,7 +31,6 @@ def count_roll_neighbours(data: list[list[str]]) -> int:
     for r in range(rows):
         for c in range(cols):
             if data[r][c] == '@' and matrix[r][c] < 4:
-                print(f"Roll at ({r}, {c}) has {matrix[r][c]} neighbours")
                 count += 1    
     
     return count
