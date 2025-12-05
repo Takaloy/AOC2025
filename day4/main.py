@@ -2,31 +2,28 @@ import argparse
 from pathlib import Path
 
 
+def _increment_matrix(matrix: list[list[int]], r: int, c: int) -> None:
+    rows = len(matrix)
+    cols = len(matrix[0]) if rows > 0 else 0
+    for dr in [-1, 0, 1]:
+        for dc in [-1, 0, 1]:
+            if dr == 0 and dc == 0:
+                continue
+            nr = r + dr
+            nc = c + dc
+            if 0 <= nr < rows and 0 <= nc < cols:
+                matrix[nr][nc] += 1
 
 def count_roll_neighbours(data: list[list[str]], recursive: bool = False, count: int = 0) -> int:
     rows = len(data)
     cols = len(data[0]) if rows > 0 else 0
     matrix = [[0] * cols for _ in range(rows)]
     grid = [list(row) for row in data]  # convert to char grid
-
     for r in range(rows):
         for c in range(cols):
             if data[r][c] == '@':
-                for dr in [-1, 0, 1]:
-                    for dc in [-1, 0, 1]:
-                        if dr == 0 and dc == 0:
-                            continue
-                        nr = (r + dr)
-                        nc = (c + dc)
+                _increment_matrix(matrix, r, c)
 
-                        if nr < 0 or nr >= rows:
-                            continue
-
-                        if nc < 0 or nc >= cols:
-                            continue
-                            
-                        matrix[nr][nc] += 1
-    
     shouldRecurse = False
     # now loop through again to count rolls that have less than 4 papers @
     for r in range(rows):
