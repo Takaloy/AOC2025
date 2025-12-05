@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 
-def _increment_matrix(matrix: list[list[int]], r: int, c: int) -> None:
+def _increment_matrix(matrix: list[list[int]], r: int, c: int, increment: int) -> None:
     rows = len(matrix)
     cols = len(matrix[0]) if rows > 0 else 0
     for dr in [-1, 0, 1]:
@@ -12,7 +12,24 @@ def _increment_matrix(matrix: list[list[int]], r: int, c: int) -> None:
             nr = r + dr
             nc = c + dc
             if 0 <= nr < rows and 0 <= nc < cols:
-                matrix[nr][nc] += 1
+                matrix[nr][nc] += increment
+
+def _count_roll_matrix(matrix: list[list[int]], grid: list[list[str]], recursive = False, count: int = 0) -> int:
+    rows = len(matrix)
+    cols = len(matrix[0]) if rows > 0 else 0
+    shouldRecurse = False
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '@' and matrix[r][c] < 4:
+                count += 1
+                grid[r][c] = '.'
+                _increment_matrix(matrix, r, c, -1)
+                shouldRecurse = True
+
+    if shouldRecurse and recursive:
+        return _count_roll_matrix(matrix, grid, recursive, count)
+    else:
+        return count
 
 def count_roll_neighbours(data: list[list[str]], recursive: bool = False, count: int = 0) -> int:
     rows = len(data)
@@ -22,21 +39,10 @@ def count_roll_neighbours(data: list[list[str]], recursive: bool = False, count:
     for r in range(rows):
         for c in range(cols):
             if data[r][c] == '@':
-                _increment_matrix(matrix, r, c)
+                _increment_matrix(matrix, r, c, 1)
 
-    shouldRecurse = False
-    # now loop through again to count rolls that have less than 4 papers @
-    for r in range(rows):
-        for c in range(cols):
-            if data[r][c] == '@' and matrix[r][c] < 4:
-                grid[r][c] = '.'
-                count += 1
-                shouldRecurse = True
+    return _count_roll_matrix(matrix, grid, recursive, count)
     
-    if recursive and shouldRecurse:
-        return count_roll_neighbours(grid, recursive=True, count=count)
-    else:
-        return count
 
 
 def parse_args() -> argparse.Namespace:
