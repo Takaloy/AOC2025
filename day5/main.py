@@ -46,8 +46,7 @@ def find_fresh_incredient_ids_count(lines : Iterable[str]) -> int:
         fresh_inregredient_ranges.append( (r_start, r_end) )
 
     sorted_fresh_inregredient_ranges = sorted(fresh_inregredient_ranges, key=lambda x: x[0])
-    fresh_ingredient_ids = []
-
+    
     current_index = 0
     fresh_ids_total = 0
 
