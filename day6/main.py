@@ -22,10 +22,13 @@ def get_permutations(elements: list[str]) -> list[int]:
                 total[index] = int(total[index]) - int(currentIters[index])
             elif operators[index] == '/':
                 total[index] = int(currentIters[index]) / int(total[index])
-            
-    
 
     return total
+
+def get_total(elements: list[str]) -> int:
+    
+    results = get_permutations(elements)
+    return sum (results)
 
 def parse_args() -> argparse.Namespace:
     """Build and parse the CLI arguments."""
@@ -50,7 +53,7 @@ def main() -> None:
     args = parse_args()
     lines = read_input(args.input)
 
-    print(get_permutations(lines))
+    print(f"Part 1: {get_total(lines)}")
 
 
 if __name__ == "__main__":
