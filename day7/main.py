@@ -48,16 +48,39 @@ def part_one(data: Iterable[str]) -> int:
         splitter_positions = new_splits #replace it for the next line
 
         printable.append("".join(lineList))
-    
-    for row in printable:
-        print(row)
-
     return splitted_count
 
 def part_two(data: Iterable[str]) -> int:
-    """Solve part two of the puzzle."""
-    # Placeholder to make template runnable.
-    pass
+    
+    pos = data[0].index("S")
+
+    grid = data
+    rows, cols = len(grid), len(grid[0])
+
+    # ways[r][c] = number of ways to reach cell (r, c)
+    ways = [[0] * cols for _ in range(rows)]
+    ways[0][pos] = 1
+
+
+    for r in range(rows - 1):  # no movement from last row
+        for c in range(cols):
+            w = ways[r][c]
+            if w == 0:
+                continue
+            ch = grid[r][c]
+
+            if ch == "^":
+                # split down-left and down-right
+                for dc in (-1, 1):
+                    nc = c + dc
+                    if 0 <= nc < cols:
+                        ways[r+1][nc] += w
+            else:
+                ways[r+1][c] += w
+
+    # sum of all ways that end in the last row
+    answer = sum(ways[rows - 1][c] for c in range(cols))
+    return answer
 
 
 def main() -> None:
