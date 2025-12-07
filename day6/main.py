@@ -27,42 +27,41 @@ def get_total_simples(elements: list[str]) -> int:
     return sum (results)
 
 def get_cephalopods_math_insanity(elements: list[str]) -> list[int]:
+    """Evaluate the vertical cephalopod math expression."""
 
-    total = []
-    total_characters = len(elements[0])
-    pivoted_matrix = [[''] * (len(elements)) for _ in range(total_characters)]
-    operators = elements[-1].split()
-    counting_indexes = []
+    number_rows = elements[:-1]
+    operator_row = elements[-1]
 
-    for i in range(total_characters):
-        character = elements[-1][i]
-        if (character == "+" or character == "*"):
-            counting_indexes.append((i, character))
+    # Build column strings once so we can slice them per operator chunk.
+    columns = ["".join(column) for column in zip(*number_rows)]
 
-    for line in range(0, len(elements)-1):
-        for i in range(total_characters):
-            pivoted_matrix[i][line] = elements[line][i]
+    operator_positions = [
+        (index, char)
+        for index, char in enumerate(operator_row)
+        if char in {"+", "*"}
+    ]
 
-    for counter_index in range(0, len(counting_indexes)):
-        (index, operator) = counting_indexes[counter_index]
-        if (counter_index == len(counting_indexes)-1): # last item
-            stopper = total_characters
+    totals: list[int] = []
+    for idx, (start, operator) in enumerate(operator_positions):
+        if idx == len(operator_positions) - 1:
+            stop = len(columns)
         else:
-            (stopper, _) = counting_indexes[counter_index+1]
-            stopper -= 1 #stop one before the start of next
+            stop = operator_positions[idx + 1][0] - 1
 
-        temp = 0
-        for line in pivoted_matrix[index:stopper]:
-            value = int("".join(line))
-            if operator == "+":
-                temp += value
-            elif operator == "*":
-                if (temp == 0):
-                    temp = 1
-                temp *= value
-        
-        total.append(temp)
-    return total
+        column_slice = columns[start:stop]
+        if operator == "+":
+            subtotal = sum(int(col.strip()) for col in column_slice if col.strip())
+            totals.append(subtotal)
+        else:
+            product = 1
+            for col in column_slice:
+                stripped = col.strip()
+                if not stripped:
+                    continue
+                product *= int(stripped)
+            totals.append(product)
+
+    return totals
 
 def get_cephalopods_math_insanity_total(elements: list[str]) -> int:
     totals = get_cephalopods_math_insanity(elements)
