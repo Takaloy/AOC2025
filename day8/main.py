@@ -84,7 +84,6 @@ def part_two(data: Sequence[str]) -> int:
         ds.union(i,j)
 
         parent = ds.find(i)
-        print(f"{i},{j} : {parent}")
         if (ds.set_size(parent) == length):
             p1 = tuple(map(int, data[i].split(',')))
             p2 = tuple(map(int, data[j].split(',')))
