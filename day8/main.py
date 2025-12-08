@@ -39,24 +39,28 @@ def parse_input(lines: Sequence[str]) -> Sequence[str]:
     return lines
 
 
+def _sorted_distances(data: Sequence[str]) -> dict[float, tuple[int, int]]:
+    """Return pairwise distances sorted ascending by their value."""
+    distances: dict[float, tuple[int, int]] = {}
+
+    for i in range(0, len(data) - 1):
+        for j in range(i + 1, len(data)):
+            val = (i, j)
+            p1 = tuple(map(int, data[i].split(',')))
+            p2 = tuple(map(int, data[j].split(',')))
+            key = math.dist(p1, p2)  # hoping float distances stay unique
+            distances[key] = val
+
+    return dict(sorted(distances.items(), key=lambda x: x[0]))
+
+
 def part_one(data: Sequence[str]) -> int:
     """Solve Part 1 of the puzzle."""
 
-    # matrix = [[0] * data for _ in range(data)]  #create a 2d array
-    distances = {}
-
-    for i in range(0, len(data)-1):
-        for j in range(i+1, len(data)):
-            val = (i,j)
-            p1 = tuple(map(int, data[i].split(',')))
-            p2 = tuple(map(int, data[j].split(',')))
-            key = math.dist(p1,p2)    #using a dictionary is super hacky and hoping for floats to not clash
-            distances[key] = val
-
-    sorted_distances = dict(sorted(distances.items(), key=lambda x: x[0]))
+    sorted_distances = _sorted_distances(data)
 
     ds = DisjointSet(1000)
-    for (key, value) in list(sorted_distances.items())[:1000]:
+    for (_, value) in list(sorted_distances.items())[:1000]:
         (i,j) = value
         ds.union(i,j)
 
@@ -68,7 +72,26 @@ def part_one(data: Sequence[str]) -> int:
 
 def part_two(data: Sequence[str]) -> int:
     """Solve Part 2 of the puzzle."""
-    pass
+    length = len(data)
+    sorted_distances = _sorted_distances(data)
+
+    ds = DisjointSet(length)
+
+    answer = 0
+
+    for (_, value) in list(sorted_distances.items()):
+        (i,j) = value
+        ds.union(i,j)
+
+        parent = ds.find(i)
+        print(f"{i},{j} : {parent}")
+        if (ds.set_size(parent) == length):
+            p1 = tuple(map(int, data[i].split(',')))
+            p2 = tuple(map(int, data[j].split(',')))
+            answer = p1[0] * p2[0]
+            break
+
+    return answer
 
 
 def main() -> None:
